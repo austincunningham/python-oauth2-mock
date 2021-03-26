@@ -1,56 +1,23 @@
 # Usage
 
-```bash
-python __main__.py
 ```
-
-**Request**
-```bash
-curl -i http://localhost:8889/oauth/token -X POST -H 'Content-Type: application/json' -d '{"client_id": "abc", "client_secret": "xyz", "grant_type": "client_credentials", "scope": "foo"}'
+python client-server.py
 ```
+## Client
+demo client 
 
-**Response**
-```http
-HTTP/1.1 200 OK
-Content-Length: 100
-Content-Type: application/json
-Cache-Control: no-store
-Pragma: no-cache
-Date: Tue, 18 Nov 2014 22:32:18 GMT
-Server: TornadoServer/4.0.2
-Proxy-Connection: keep-alive
-Connection: keep-alive
+http://localhost:8081/app
 
-{"token_type": "Bearer", "expires_in": 3600, "access_token": "7d2adcd2-2756-4531-b7d2-69c19f5b1063"}
-```
+## oAuth server
+### token
+http://localhost:8090/token
+### authorize
+http://localhost:8090/authorize
 
-Consumer Resource
--------
-**Request**
+Need to set the callback url/redirect_uri in the line 208
+the clients callback is as follow
+```python
+    client_store.add_client(client_id="abc", client_secret="xyz",
+                            redirect_uris=["http://localhost:8081/callback"])
+``` 
 
-```bash
-curl -i http://localhost:8889/foo -H 'Authorization: Bearer 7d2adcd2-2756-4531-b7d2-69c19f5b1063'
-```
-
-**Response**
-```http
-HTTP/1.1 200 OK
-Etag: "e8ac30e7653f247f956a04b1f901d893e593cd1b"
-Content-Length: 23
-Date: Tue, 18 Nov 2014 22:33:15 GMT
-Content-Type: text/html; charset=UTF-8
-Server: TornadoServer/4.0.2
-Proxy-Connection: keep-alive
-Connection: keep-alive
-
-{"msg": "This is Foo!"}
-```
-
-## Container
-
-Container at `quay.io/austincunningham/python-oauth2-mock:latest`
-
-run with
-```bash
- run -p 8889:8889 quay.io/austincunningham/python-oauth2-mock:latest
-```
