@@ -1,11 +1,11 @@
-Client Step By Step
-===========
+# Usage
 
-Get a Token
--------
+```bash
+python __main__.py
+```
 
 **Request**
-```
+```bash
 curl -i http://localhost:8889/oauth/token -X POST -H 'Content-Type: application/json' -d '{"client_id": "abc", "client_secret": "xyz", "grant_type": "client_credentials", "scope": "foo"}'
 ```
 
@@ -28,7 +28,7 @@ Consumer Resource
 -------
 **Request**
 
-```
+```bash
 curl -i http://localhost:8889/foo -H 'Authorization: Bearer 7d2adcd2-2756-4531-b7d2-69c19f5b1063'
 ```
 
@@ -44,4 +44,13 @@ Proxy-Connection: keep-alive
 Connection: keep-alive
 
 {"msg": "This is Foo!"}
+```
+
+## Container
+
+Container at `quay.io/austincunningham/python-oauth2-mock:latest`
+
+run with
+```bash
+ run -p 8889:8889 quay.io/austincunningham/python-oauth2-mock:latest
 ```

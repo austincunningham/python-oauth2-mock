@@ -68,11 +68,16 @@ class FooHandler(BaseHandler):
     def get(self):
         self.finish(json.dumps({'msg': 'This is Foo!'}))
 
+class AuthorizeHandler(BaseHandler):
+    def get(self):
+        return self.finish(json.dumps({'auth': 'enabled'}))
+
+
 
 def main():
     # Populate mock
     mongo = mongomock.MongoClient()
-    mongo['db']['oauth_clients'].insert({'identifier': 'abc',
+    mongo['db']['oauth_clients'].insert_one({'identifier': 'abc',
                                          'secret': 'xyz',
                                          'redirect_uris': [],
                                          'authorized_grants': [oauth2.grant.ClientCredentialsGrant.grant_type]})
@@ -94,6 +99,7 @@ def main():
         token_generator=token_generator
     )
     auth_controller.token_path = '/oauth/token'
+    auth_controller.authorize_path = '/authorize'
 
 
     # Add Client Credentials to OAuth2 controller
@@ -102,12 +108,13 @@ def main():
     # Create Tornado application
     app = tornado.web.Application([
         (r'/oauth/token', OAuth2Handler, dict(controller=auth_controller)),
+        (r'/authorize', AuthorizeHandler, dict(controller=auth_controller)),
         (r'/foo', FooHandler, dict(controller=auth_controller))
     ])
 
     # Start Server
     app.listen(8889)
-    print("Server Starting")
+    print("Server Starting on port 8889")
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":
